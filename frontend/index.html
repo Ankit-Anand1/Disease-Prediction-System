@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedPredict - AI Healthcare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/ai-features.css">
+</head>
+<body>
+    <nav class="navbar glass-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <span>MedPredict</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="patient-dashboard.html">Dashboard</a>
+                <a href="diabetes.html">Diabetes</a>
+                <a href="heart.html">Heart Disease</a>
+                <a href="auth.html" class="auth-link btn btn-outline" style="padding: 0.5rem 1.25rem; font-size: 0.9rem;">Login / Signup</a>
+            </div>
+            <button class="mobile-menu-btn"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <header class="hero fade-in-up">
+        <div class="hero-content">
+            <div class="badge"><i class="fa-solid fa-wand-magic-sparkles"></i> &nbsp; AI Diagnostics</div>
+            <h1>Predict diseases before they happen.</h1>
+            <p>Empower your health journey with our state-of-the-art machine learning models. Get instant, accurate risk assessments for Diabetes and Heart Disease without compromising privacy.</p>
+            <div class="hero-actions">
+                <a href="diabetes.html" class="btn btn-primary btn-large">
+                    Start Test <i class="fa-solid fa-arrow-right"></i>
+                </a>
+                <a href="patient-dashboard.html" class="btn btn-outline btn-large" style="background: white; border-color: #E2E8F0; color: #0F172A; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <i class="fa-solid fa-chart-pie"></i> View Dashboard
+                </a>
+            </div>
+        </div>
+        
+        <div class="hero-image">
+            <!-- Animated Glowing Orb -->
+            <div style="position:absolute; width: 500px; height: 500px; background: conic-gradient(from 0deg, #6366F1, #EC4899, #3B82F6, #6366F1); border-radius: 50%; filter: blur(120px); opacity: 0.35; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; animation: spinOrb 20s linear infinite;"></div>
+            
+            <style>
+                @keyframes spinOrb { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+                @keyframes glowPulseHeart { 0%, 100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4); transform: scale(1); } 50% { box-shadow: 0 0 25px rgba(236, 72, 153, 0.7); transform: scale(1.05); } }
+                @keyframes glowPulseDiabetes { 0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); transform: scale(1); } 50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.7); transform: scale(1.05); } }
+            </style>
+            
+            <!-- SaaS Dashboard Mockup -->
+            <div class="saas-mockup" style="position: relative; z-index: 1;">
+                <div class="mockup-header">
+                    <div class="mockup-dots"><span class="red"></span><span class="yellow"></span><span class="green"></span></div>
+                    <div class="mockup-title">medpredict-ai.app</div>
+                </div>
+                <div class="mockup-body" style="padding: 1.5rem; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1.5rem;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #E0E7FF, #C7D2FE); border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);"></div>
+                        <div style="height: 12px; width: 100px; background: #E2E8F0; border-radius: 99px;"></div>
+                    </div>
+                    
+                    <div style="height: 10px; width: 40%; background: #CBD5E1; border-radius: 99px; margin-bottom: 0.5rem;"></div>
+                    <div style="height: 28px; width: 70%; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 8px; margin-bottom: 2rem; opacity:0.9;"></div>
+                    
+                    <div style="display: flex; gap: 1rem;">
+                        <div style="flex:1; height: 130px; background: white; border: 1px solid #E2E8F0; border-radius: 16px; position:relative; overflow:hidden; box-shadow: 0 8px 16px rgba(0,0,0,0.05);">
+                            <div style="position:absolute; bottom:0; width:100%; height:50%; background:linear-gradient(180deg, rgba(16,185,129,0) 0%, rgba(16,185,129,0.1) 100%);"></div>
+                            <svg viewBox="0 0 100 40" preserveAspectRatio="none" style="position:absolute; bottom:0; width:100%; height: 50px;"><path d="M0 40 Q 25 20, 50 30 T 100 10 L 100 40 L 0 40 Z" fill="rgba(16,185,129,0.15)" stroke="#10B981" stroke-width="2"/></svg>
+                            <div style="padding: 1.2rem; position:relative; z-index:2;">
+                                <div style="font-size:0.8rem; color:#64748B; font-weight:700;">Health Score</div>
+                                <div style="font-size:2rem; font-weight:800; color:#0F172A; line-height:1;">92<span style="font-size:1rem; color:#10B981;">+5%</span></div>
+                            </div>
+                        </div>
+                        <div style="flex:1; display:flex; flex-direction:column; gap:0.5rem;">
+                            <div style="background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 0.8rem; display:flex; align-items:center; gap:0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                                <div style="width:36px; height:36px; background:linear-gradient(135deg, #6366F1, #8B5CF6); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:1rem; animation: glowPulseDiabetes 3s infinite; border: 2px solid white;"><i class="fa-solid fa-droplet"></i></div>
+                                <div>
+                                    <div style="font-size:0.75rem; color:#64748B; font-weight:600;">Diabetes Risk</div>
+                                    <div style="font-size:1rem; font-weight:800; color:#10B981; line-height:1;">Safe</div>
+                                </div>
+                            </div>
+                            <div style="background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 0.8rem; display:flex; align-items:center; gap:0.8rem; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                                <div style="width:36px; height:36px; background:linear-gradient(135deg, #EC4899, #F43F5E); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:1rem; animation: glowPulseHeart 3s infinite 1s; border: 2px solid white;"><i class="fa-solid fa-heart-pulse"></i></div>
+                                <div>
+                                    <div style="font-size:0.75rem; color:#64748B; font-weight:600;">Heart Risk</div>
+                                    <div style="font-size:1rem; font-weight:800; color:#10B981; line-height:1;">Optimal</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; background: white; border: 1px solid #E2E8F0; border-left: 4px solid var(--accent); padding: 1rem; border-radius: 12px; display:flex; gap:0.8rem; align-items:center; box-shadow: 0 4px 6px rgba(0,0,0,0.02);">
+                        <i class="fa-solid fa-robot" style="color: var(--accent); font-size:1.2rem;"></i>
+                        <div>
+                            <div style="font-size:0.85rem; font-weight:700; color:#0F172A;">AI Assistant Active</div>
+                            <div style="font-size:0.75rem; color:#64748B;">All vital parameters are tracking normally.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-card main-stat floating-slow" style="bottom: 5%; left: -15%; top: auto; padding: 1.25rem;">
+                <div class="stat-icon" style="width: 50px; height: 50px; font-size:1.2rem;"><i class="fa-solid fa-bolt"></i></div>
+                <div class="stat-info">
+                    <h3 style="font-size: 1.5rem;"><0.2s</h3>
+                    <p style="font-size: 0.85rem;">Analysis Speed</p>
+                </div>
+            </div>
+            <div class="glass-card sub-stat floating-fast" style="top: 15%; right: -10%; bottom: auto; padding: 1.25rem;">
+                <div class="stat-icon pulse" style="width: 50px; height: 50px; font-size:1.2rem; background: linear-gradient(135deg, var(--success), #059669);"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="stat-info">
+                    <h3 style="font-size: 1.5rem;">Secure</h3>
+                    <p style="font-size: 0.85rem;">Local Eval</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="features" class="features fade-in-up" style="margin-top: 4rem; animation-delay: 0.2s;">
+        <div class="section-header">
+            <div class="badge" style="background:#EEF2FF; border-color:#C7D2FE; color:var(--primary);">Why MedPredict?</div>
+            <h2>Enterprise-Grade AI for Your Health</h2>
+            <p style="max-width: 600px; margin: 0 auto;">We combine massive medical datasets with cutting-edge machine learning to provide you with clinical-grade insights instantly.</p>
+        </div>
+        
+        <div class="bento-layout">
+            <!-- Large Card -->
+            <div class="bento-box bento-large feature-card" style="text-align:left; display:flex; flex-direction:column; justify-content:center;">
+                <div class="feature-icon" style="margin: 0 0 2rem 0; width:64px; height:64px;"><i class="fa-solid fa-microchip"></i></div>
+                <h3 style="font-size: 2rem; margin-bottom: 1rem;">Advanced Health Analytics</h3>
+                <p style="font-size: 1.1rem; color:#475569;">Our platform uses state-of-the-art analytical tools to evaluate your clinical history, providing fast and highly accurate risk assessments to safeguard your long-term well-being.</p>
+            </div>
+            
+            <!-- Small Cards -->
+            <div class="bento-box feature-card" style="text-align:left; padding: 2rem;">
+                <div class="feature-icon" style="margin: 0 0 1.5rem 0; background:#FDF2F8; color:var(--secondary); width:50px; height:50px; font-size:1.2rem;"><i class="fa-solid fa-lock"></i></div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">100% Private</h3>
+                <p style="font-size: 0.95rem;">Your clinical data never leaves your browser. Local evaluation ensures complete anonymity.</p>
+            </div>
+            
+            <div class="bento-box feature-card" style="text-align:left; padding: 2rem;">
+                <div class="feature-icon" style="margin: 0 0 1.5rem 0; background:#ECFDF5; color:#10B981; width:50px; height:50px; font-size:1.2rem;"><i class="fa-solid fa-file-pdf"></i></div>
+                <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Smart Reports</h3>
+                <p style="font-size: 0.95rem;">Download structured, actionable medical PDFs instantly to share with your physician.</p>
+            </div>
+            
+            <!-- Medium Horizontal Card -->
+            <div class="bento-box bento-wide feature-card" style="display:flex; align-items:center; gap:2.5rem; text-align:left; padding: 2.5rem;">
+                <div class="feature-icon" style="margin:0; flex-shrink:0; width:80px; height:80px; font-size:2rem; background:#FFFBEB; color:#F59E0B;"><i class="fa-solid fa-apple-whole"></i></div>
+                <div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">AI Diet Recommendations</h3>
+                    <p style="margin:0; font-size: 1.05rem;">Receive highly personalized, actionable lifestyle and diet adjustments directly correlated with your specific risk factors, generated dynamically by our AI Assistant.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <div class="logo">
+                    <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                    <span>MedPredict</span>
+                </div>
+                <p>Empowering preventative healthcare through artificial intelligence.</p>
+                <div class="disclaimer-text" style="justify-content: flex-start;">
+                    <i class="fa-solid fa-shield-halved" style="color: #10B981;"></i> Privacy-first health insights
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4>Assessments</h4>
+                <a href="diabetes.html">Diabetes Risk</a>
+                <a href="heart.html">Heart Disease Risk</a>
+                <a href="patient-dashboard.html">Patient Dashboard</a>
+            </div>
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <p style="font-size: 0.8rem; color: #EF4444; margin-top: 1rem;"><i class="fa-solid fa-circle-exclamation"></i> Disclaimer: This is not a medical diagnosis. Consult a qualified doctor.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 MedPredict AI. For educational purposes only.</p>
+        </div>
+    </footer>
+    <script src="./js/auth.js"></script>
+    <script src="./js/main.js"></script>
+    <script>
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

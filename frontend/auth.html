@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - MedPredict</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        body {
+            margin: 0; padding: 0; min-height: 100vh;
+            background-color: #F8FAFC;
+            /* Premium SaaS Grid & Glow Background */
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(236, 72, 153, 0.05), transparent 25%);
+            display: flex; flex-direction: column;
+        }
+        
+        .auth-container { 
+            max-width: 420px; margin: 6rem auto; padding: 2.5rem; 
+            background: #FFFFFF; border-radius: 24px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(0, 0, 0, 0.02); 
+            border: 1px solid rgba(226, 232, 240, 0.8); 
+            text-align: center; 
+        }
+        
+        .auth-header { margin-bottom: 2rem; position: relative; }
+        .auth-icons { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1.5rem; }
+        
+        .icon-diabetes, .icon-heart {
+            width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; 
+            color: white; font-size: 1.8rem; border: 3px solid white; z-index: 2; position: relative;
+        }
+        .icon-diabetes {
+            background: linear-gradient(135deg, #6366F1, #8B5CF6);
+            animation: glowPulseDiabetes 3s infinite;
+        }
+        .icon-heart {
+            background: linear-gradient(135deg, #EC4899, #F43F5E);
+            animation: glowPulseHeart 3s infinite 1.5s;
+        }
+        
+        @keyframes glowPulseDiabetes { 
+            0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); transform: scale(1) translateY(0); } 
+            50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.8); transform: scale(1.05) translateY(-5px); } 
+        }
+        @keyframes glowPulseHeart { 
+            0%, 100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4); transform: scale(1) translateY(0); } 
+            50% { box-shadow: 0 0 30px rgba(236, 72, 153, 0.8); transform: scale(1.05) translateY(-5px); } 
+        }
+
+        .auth-header h2 { font-size: 1.75rem; color: #0F172A; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        
+        .auth-toggle { display: flex; background: #F8FAFC; border-radius: 12px; margin-bottom: 2rem; padding: 0.3rem; border: 1px solid #E2E8F0; }
+        .auth-toggle button { flex: 1; padding: 0.6rem; border: none; background: transparent; font-family: 'Outfit'; font-weight: 600; color: #64748B; border-radius: 8px; cursor: pointer; transition: 0.2s; font-size: 0.95rem; }
+        .auth-toggle button.active { background: #FFFFFF; color: #0F172A; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .auth-form { display: flex; flex-direction: column; gap: 1.25rem; text-align: left; }
+        
+        .input-group { position: relative; }
+        .auth-input { padding: 0.85rem 1rem; border: 1px solid #E2E8F0; background: #FFFFFF; border-radius: 12px; font-family: 'Outfit'; font-weight: 500; color: #0F172A; transition: all 0.2s ease; width: 100%; box-sizing: border-box; font-size: 0.95rem; }
+        .auth-input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .auth-input:focus + .typing-indicator { opacity: 1; }
+        
+        .typing-indicator { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); opacity: 0; transition: 0.2s; pointer-events: none; }
+        .typing-indicator i { color: var(--primary); font-size: 0.85rem; }
+
+        .auth-btn { margin-top: 0.5rem; padding: 0.85rem; border: none; border-radius: 12px; background: var(--primary); color: white; font-family: 'Outfit'; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2); }
+        .auth-btn:hover { background: #4F46E5; box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3); transform: translateY(-1px); }
+        .auth-btn:active { transform: translateY(1px); }
+        
+        #signupFields { display: none; }
+        .secure-badge { margin-top: 1.5rem; display: inline-flex; align-items: center; gap: 0.4rem; color: #64748B; font-weight: 500; font-size: 0.85rem; }
+        .secure-badge i { color: #10B981; }
+    </style>
+</head>
+<body class="app-body">
+    <nav class="navbar glass-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <span>MedPredict</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-icons">
+                <div class="icon-diabetes"><i class="fa-solid fa-droplet"></i></div>
+                <div class="icon-heart"><i class="fa-solid fa-heart-pulse"></i></div>
+            </div>
+            <h2>Welcome to MedPredict</h2>
+            <p style="color: #64748B;">Securely access your medical AI assessments.</p>
+        </div>
+
+        <div class="auth-toggle">
+            <button id="loginTab" class="active" onclick="switchAuth('login')">Login</button>
+            <button id="signupTab" onclick="switchAuth('signup')">Sign Up</button>
+        </div>
+
+        <form id="authForm" class="auth-form" onsubmit="handleAuth(event)">
+            <div id="signupFields">
+                <label style="font-weight: 700; color: #0F172A; font-size: 0.95rem; margin-bottom: 0.3rem; display:block;">Full Name</label>
+                <div class="input-group">
+                    <input type="text" id="nameInput" class="auth-input" placeholder="e.g. Jane Doe">
+                    <div class="typing-indicator"><i class="fa-solid fa-pen-nib"></i></div>
+                </div>
+            </div>
+            
+            <div>
+                <label style="font-weight: 700; color: #0F172A; font-size: 0.95rem; margin-bottom: 0.3rem; display:block;">Email Address</label>
+                <div class="input-group">
+                    <input type="email" id="emailInput" class="auth-input" required placeholder="name@example.com">
+                    <div class="typing-indicator"><i class="fa-solid fa-pen-nib"></i></div>
+                </div>
+            </div>
+            
+            <div>
+                <label style="font-weight: 700; color: #0F172A; font-size: 0.95rem; margin-bottom: 0.3rem; display:block;">Password</label>
+                <div class="input-group">
+                    <input type="password" id="passwordInput" class="auth-input" required placeholder="••••••••">
+                    <div class="typing-indicator"><i class="fa-solid fa-lock"></i></div>
+                </div>
+            </div>
+            
+            <button type="submit" id="submitBtn" class="auth-btn">Sign In</button>
+        </form>
+
+        <div class="secure-badge">
+            <i class="fa-solid fa-shield-halved"></i> Your data stays private
+        </div>
+    </div>
+
+    <script src="./js/auth.js"></script>
+</body>
+</html>

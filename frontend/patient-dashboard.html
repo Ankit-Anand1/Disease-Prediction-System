@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - MedPredict</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/dashboard.css">
+    <link rel="stylesheet" href="./css/ai-features.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.8s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; justify-content: center; align-items: center; }
+        .modal.active { display: flex; animation: fadeIn 0.3s; }
+        .modal-content { background: white; padding: 2.5rem; border-radius: 24px; width: 100%; max-width: 400px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .modal-header h2 { margin: 0; font-size: 1.5rem; }
+        .close-btn { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #64748B; }
+        
+        .health-score-card { background: linear-gradient(135deg, #4F46E5, #7C3AED); color: white; }
+        .health-score-card .bento-label { color: rgba(255,255,255,0.8); }
+        .health-score-card .bento-val { color: white; }
+    </style>
+</head>
+<body class="app-body">
+    <nav class="navbar glass-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <span>MedPredict</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="patient-dashboard.html" class="active">Dashboard</a>
+                <a href="diabetes.html">Diabetes</a>
+                <a href="heart.html">Heart Disease</a>
+            </div>
+            <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout fade-in">
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+            <div class="profile-widget">
+                <div class="profile-avatar"><i class="fa-solid fa-user"></i></div>
+                <h3 style="font-size: 1.5rem; color: #0F172A; margin-bottom: 0.2rem;" class="user-name-display">Patient</h3>
+                <p style="color: #64748B; font-weight: 500; margin-bottom: 1rem;">ID: <span class="user-id-display">Guest</span></p>
+                <button onclick="document.getElementById('editModal').classList.add('active')" class="btn btn-outline btn-block" style="font-size: 0.85rem; padding: 0.5rem;"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</button>
+            </div>
+            <div class="quick-actions">
+                <h4 style="color: #64748B; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem;">Quick Actions</h4>
+                <a href="diabetes.html" class="btn btn-primary btn-block" style="text-align: left; justify-content: flex-start; margin-bottom: 0.5rem;">
+                    <i class="fa-solid fa-vial" style="width: 20px;"></i> Diabetes Test
+                </a>
+                <a href="heart.html" class="btn btn-secondary btn-block" style="text-align: left; justify-content: flex-start;">
+                    <i class="fa-solid fa-heart-pulse" style="width: 20px;"></i> Heart Test
+                </a>
+                <button onclick="logout()" class="btn btn-outline btn-block" style="margin-top: 1rem; color: #EF4444; border-color: #FECACA; text-align: left; justify-content: flex-start;"><i class="fa-solid fa-arrow-right-from-bracket" style="width:20px;"></i> Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Dashboard Content -->
+        <main class="dashboard-main">
+            <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-end;">
+                <div>
+                    <h1 style="font-size: 2.5rem; letter-spacing: -0.02em; color: #0F172A; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 1rem;">
+                        Health Overview <span id="healthBadge" style="font-size:0.9rem; padding: 0.3rem 0.8rem; border-radius: 99px; font-weight:700; background: #ECFDF5; color: #10B981; border: 1px solid #A7F3D0;">Calculating...</span>
+                    </h1>
+                    <p style="font-size: 1.1rem; color: #64748B;">Monitor your AI risk assessments and clinical history.</p>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; background: white; padding: 0.5rem 1rem; border-radius: 99px; border: 1px solid #E2E8F0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                        <span style="font-size: 0.85rem; font-weight: 600; color: #475569;"><i class="fa-solid fa-robot"></i> AI Health Coach</span>
+                        <label class="switch" style="position: relative; display: inline-block; width: 40px; height: 20px;">
+                            <input type="checkbox" id="aiCoachToggle" onchange="toggleCoach(this)">
+                            <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #CBD5E1; transition: .4s; border-radius: 34px;"></span>
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" onclick="showImproveModal()" style="padding: 0.6rem 1.25rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Improve My Health</button>
+                </div>
+            </div>
+            
+            <style>
+                .switch input { opacity: 0; width: 0; height: 0; }
+                .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+                input:checked + .slider { background-color: #8B5CF6; }
+                input:checked + .slider:before { transform: translateX(20px); }
+            </style>
+
+            <!-- Health Tips Feed -->
+            <div style="background: linear-gradient(90deg, #F8FAFC, #EEF2FF); border-radius: 12px; padding: 0.8rem 1.5rem; display: flex; align-items: center; gap: 1rem; margin-bottom: -1rem; border: 1px solid #E2E8F0; overflow: hidden; white-space: nowrap;">
+                <i class="fa-solid fa-heart-circle-check" style="color: var(--primary);"></i>
+                <div style="font-size: 0.9rem; font-weight: 600; color: #475569; animation: slideText 10s infinite linear;" id="tipsFeed">Daily Tip: Staying hydrated can reduce blood pressure and improve overall heart function.</div>
+            </div>
+            
+            <style>
+                @keyframes slideText {
+                    0% { transform: translateX(100%); }
+                    100% { transform: translateX(-100%); }
+                }
+            </style>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state hidden modern-table-wrapper" style="padding: 4rem 2rem;">
+                <img src="https://cdn-icons-png.flaticon.com/512/2966/2966327.png" alt="No Records" style="width: 120px; opacity: 0.5; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.8rem; color: #0F172A; margin-bottom: 0.5rem;">Your Health Journey Starts Here</h3>
+                <p style="color: #64748B; margin-bottom: 2.5rem; font-size: 1.1rem;">Run your first medical assessment to unlock insights, track your wellness score, and receive AI-driven recommendations.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <a href="diabetes.html" class="btn btn-primary btn-large"><i class="fa-solid fa-vial"></i> Diabetes Test</a>
+                    <a href="heart.html" class="btn btn-secondary btn-large"><i class="fa-solid fa-heart-pulse"></i> Heart Test</a>
+                </div>
+            </div>
+
+            <!-- Dashboard Body -->
+            <div id="dashboardContent" class="hidden" style="display: flex; flex-direction: column; gap: 2.5rem;">
+                <!-- Bento Stats -->
+                <div class="bento-stats">
+                    <div class="bento-card health-score-card">
+                        <div class="bento-icon" style="background: rgba(255,255,255,0.2);"><i class="fa-solid fa-star-of-life"></i></div>
+                        <div class="bento-val" id="statHealthScore">100</div>
+                        <div class="bento-label">Overall Health Score</div>
+                    </div>
+                    <div class="bento-card">
+                        <div class="bento-icon" style="background: linear-gradient(135deg, #EF4444, #F59E0B);"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <div class="bento-val" id="statHighRisk">0</div>
+                        <div class="bento-label">High Risk Alerts</div>
+                    </div>
+                    <div class="bento-card">
+                        <div class="bento-icon" style="background: linear-gradient(135deg, #10B981, #059669);"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                        <div class="bento-val" id="statTotal">0</div>
+                        <div class="bento-label">Total Assessments</div>
+                    </div>
+                </div>
+
+                <!-- Smart Insight Banner -->
+                <div id="smartInsight" style="background: #FFFBEB; border-left: 4px solid #F59E0B; padding: 1.5rem; border-radius: 12px; display: none;">
+                    <h4 style="color: #B45309; margin-bottom: 0.25rem;"><i class="fa-solid fa-lightbulb"></i> AI Insight</h4>
+                    <p id="insightText" style="color: #92400E; margin: 0; font-weight: 500;"></p>
+                </div>
+
+                <!-- Mini Insights Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;" id="miniInsightsGrid">
+                    <!-- Injected by JS -->
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-container">
+                        <h3 style="font-size: 1.15rem; margin-bottom: 1.5rem; color: #0F172A;"><i class="fa-solid fa-chart-line" style="color: var(--primary);"></i> Risk Timeline</h3>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="trendChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h3 style="font-size: 1.15rem; margin-bottom: 1.5rem; color: #0F172A;"><i class="fa-solid fa-chart-pie" style="color: var(--secondary);"></i> Risk Distribution</h3>
+                        <div style="position: relative; height: 250px; width: 100%;">
+                            <canvas id="breakdownChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Table -->
+                <div class="modern-table-wrapper">
+                    <div style="padding: 1.5rem; border-bottom: 1px solid #E2E8F0; display:flex; justify-content:space-between;">
+                        <h3 style="font-size: 1.15rem; color: #0F172A;"><i class="fa-solid fa-list-check" style="color: #64748B;"></i> Clinical History</h3>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <div id="historyBody" style="display:flex; flex-direction:column; gap:1rem; padding: 1.5rem; background: #F8FAFC;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Profile</h2>
+                <button class="close-btn" onclick="document.getElementById('editModal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+                <div>
+                    <label style="font-weight:600; font-size:0.9rem;">Full Name</label>
+                    <input type="text" id="editName" class="auth-input" style="width:100%; padding:0.8rem; border-radius:12px; border:1px solid #E2E8F0; margin-top:0.4rem;">
+                </div>
+                <button onclick="saveProfile()" class="btn btn-primary btn-block" style="margin-top:1rem;">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Improve My Health Modal -->
+    <div id="improveModal" class="modal">
+        <div class="modal-content" style="max-width: 500px; padding: 2rem;">
+            <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+                <h2 style="font-size: 1.5rem; color: #0F172A;"><i class="fa-solid fa-wand-magic-sparkles" style="color: #8B5CF6;"></i> AI Health Plan</h2>
+                <button class="close-btn" onclick="document.getElementById('improveModal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <p style="color: #64748B; margin-bottom: 1.5rem; font-size: 0.95rem;">Based on your latest medical data, the AI has generated 3 highly personalized actions for you.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 1rem;" id="actionPlanList">
+                <!-- Injected via JS -->
+            </div>
+            
+            <button class="btn btn-primary btn-block" style="margin-top: 1.5rem; background: #8B5CF6; border-color: #8B5CF6;" onclick="document.getElementById('improveModal').classList.remove('active')">Accept AI Challenge</button>
+        </div>
+    </div>
+    
+    <script src="./js/auth.js"></script>
+    <script src="./js/dashboard.js"></script>
+</body>
+</html>

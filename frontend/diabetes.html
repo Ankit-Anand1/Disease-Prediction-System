@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diabetes Prediction - MedPredict</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body class="app-body">
+    <nav class="navbar glass-nav">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                <span>MedPredict</span>
+            </a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="diabetes.html" class="active">Diabetes</a>
+                <a href="heart.html">Heart Disease</a>
+            </div>
+            <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="dashboard-header">
+            <div class="title-wrapper">
+                <div class="title-icon diabetes-icon"><i class="fa-solid fa-vial"></i></div>
+                <div>
+                    <h1>Diabetes Assessment</h1>
+                    <p>Enter your clinical metrics for an instant AI-powered risk analysis.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <div class="form-card">
+                <form id="predictForm" data-type="diabetes">
+                    <div class="form-grid">
+                        <div class="input-group">
+                            <label>Pregnancies</label>
+                            <input type="number" name="pregnancies" required min="0" step="1" placeholder="e.g. 2">
+                            <span class="help-text">Number of times pregnant</span>
+                        </div>
+                        <div class="input-group">
+                            <label>Glucose (mg/dL)</label>
+                            <input type="number" name="glucose" required min="0" step="1" placeholder="e.g. 120">
+                            <span class="help-text">Plasma glucose concentration</span>
+                        </div>
+                        <div class="input-group">
+                            <label>Blood Pressure (mmHg)</label>
+                            <input type="number" name="blood_pressure" required min="0" step="1" placeholder="e.g. 70">
+                            <span class="help-text">Diastolic blood pressure</span>
+                        </div>
+                        <div class="input-group">
+                            <label>Skin Thickness (mm)</label>
+                            <input type="number" name="skin_thickness" required min="0" step="1" placeholder="e.g. 20">
+                            <span class="help-text">Triceps skinfold thickness</span>
+                        </div>
+                        <div class="input-group">
+                            <label>Insulin (μU/mL)</label>
+                            <input type="number" name="insulin" required min="0" step="1" placeholder="e.g. 80">
+                            <span class="help-text">2-Hour serum insulin</span>
+                        </div>
+                        <div class="input-group">
+                            <label>BMI</label>
+                            <input type="number" name="bmi" required min="0" step="0.1" placeholder="e.g. 28.1">
+                            <span class="help-text">Body mass index</span>
+                        </div>
+                        <div class="input-group">
+                            <label>Diabetes Pedigree</label>
+                            <input type="number" name="diabetes_pedigree" required min="0" step="0.001" placeholder="e.g. 0.52">
+                            <span class="help-text">Diabetes pedigree function</span>
+                        </div>
+                        <div class="input-group">
+                            <label>Age (Years)</label>
+                            <input type="number" name="age" required min="1" step="1" placeholder="e.g. 45">
+                            <span class="help-text">Patient age</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary btn-large btn-block" id="submitBtn">
+                            <i class="fa-solid fa-microchip"></i> Get Risk Prediction
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Panel (Hidden by default) -->
+            <div id="resultsPanel" class="results-card hidden">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </main>
+    <script src="./js/main.js"></script>
+</body>
+</html>
