@@ -1,7 +1,1 @@
-<<<<<<< HEAD
-# medical
-# medical
-=======
-
->>>>>>> 8d3adaa (update)
-# Disease-Prediction-System
+MedPredict is an AI-powered healthcare web application that predicts the risk of Diabetes and Heart Disease using machine learning models. It provides real-time analysis, personalized health insights, risk visualization, and downloadable medical reports. Designed with a modern SaaS interface, the platform helps users understand their health condition, track risk trends, and take preventive actions through intelligent recommendations.
