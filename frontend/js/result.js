@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // AI Patient Summary
     const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Guest' };
-    let summaryText = `Based on the deep-learning analysis, <strong>${user.name}</strong> exhibits a <strong>${activeText}</strong> profile for ${data.disease} with a model confidence of ${riskValue.toFixed(1)}%.<br><br>`;
+    let summaryText = `Based on the deep-learning analysis, <strong>${user.name}</strong> exhibits a <strong>${activeText}</strong> profile for ${data.disease} with a Predicted Risk Score of ${riskValue.toFixed(1)}%.<br><br>`;
     
     if (data.factors.length >= 3) {
         summaryText += `The primary biomarkers driving this risk calculation are:<br>`;
@@ -71,10 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const trendBadge = document.getElementById('trendBadge');
         if (Math.abs(diff) > 2.0) {
             if (diff > 0) {
-                trendBadge.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> Risk Increased by ${diff.toFixed(1)}% since last test`;
+                trendBadge.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> Risk Increased from ${lastRisk.toFixed(1)}% to ${riskValue.toFixed(1)}%`;
                 trendBadge.style.color = colors.high;
             } else {
-                trendBadge.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> Risk Decreased by ${Math.abs(diff).toFixed(1)}% since last test`;
+                trendBadge.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> Risk Decreased from ${lastRisk.toFixed(1)}% to ${riskValue.toFixed(1)}%`;
                 trendBadge.style.color = colors.low;
             }
         }
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
         futureBadge.innerHTML = '<span style="color:#F59E0B;">Moderate</span>';
     } else {
         futureBadge.innerHTML = '<span style="color:#10B981;">Low Risk</span>';
-        document.querySelector('.future-risk-card p').innerHTML = 'Keep up the good work! Your 6-month projection remains stable.';
+        document.querySelector('.future-risk-card p').innerHTML = 'Based on current data, your risk is expected to remain stable.';
         document.getElementById('simulateBtn').style.display = 'none';
     }
 
@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "Age": { normal: "< 50", getInsight: v => "Age naturally increases risk factors." },
         "Cholesterol": { normal: "< 200 mg/dL", getInsight: v => v > 240 ? "Cholesterol is severely high." : "Cholesterol is slightly elevated." },
         "Blood Pressure": { normal: "< 120/80", getInsight: v => v > 140 ? "Hypertension is a critical risk factor." : "BP is elevated." },
-        "Insulin": { normal: "16-166 mIU/L", getInsight: v => "Abnormal insulin levels detected." },
+        "Insulin": { normal: "16-166 mIU/L", getInsight: v => "Minimal impact on current risk model." },
         "Low Max HR": { normal: "> 150 bpm", getInsight: v => "Low max heart rate indicates poor cardiovascular fitness." },
         "ST Depression": { normal: "< 1 mm", getInsight: v => "ST depression suggests restricted blood flow to the heart." }
     };
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 insightText = factorInsights[f.label].getInsight(val);
             }
         } else {
-            insightText = "AI detected significance in this biomarker.";
+            insightText = "Minimal impact.";
         }
 
         return `
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="metric-label" style="font-size:1.1rem; color:#0F172A; margin-bottom:0.25rem;">${f.label}</div>
                     <div style="font-size:0.85rem; color:#64748B;">${insightText}</div>
                 </div>
-                <div class="factor-val" style="color: ${factorColor}; font-size:0.9rem; font-weight:700; background: ${factorColor}15; padding: 0.25rem 0.75rem; border-radius: 99px;">AI Weight: ${f.value}%</div>
+                <div class="factor-val" style="color: ${factorColor}; font-size:0.9rem; font-weight:700; background: ${factorColor}15; padding: 0.25rem 0.75rem; border-radius: 99px;">${f.value >= 70 ? 'High Impact' : (f.value >= 40 ? 'Medium Impact' : 'Low Impact')}</div>
             </div>
             
             ${rawVal ? `
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
             doc.setFont('helvetica', 'normal');
             let y = 140;
             data.factors.slice(0, 5).forEach(f => {
-                doc.text(`- ${f.label}: Evaluated at ${f.value}% model weight`, 20, y);
+                doc.text(`- ${f.label}: ${f.value >= 70 ? 'High Impact' : (f.value >= 40 ? 'Medium Impact' : 'Low Impact')} on model prediction`, 20, y);
                 y += 8;
             });
             

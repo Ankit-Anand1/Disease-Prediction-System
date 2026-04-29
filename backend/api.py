@@ -90,8 +90,23 @@ def predict_diabetes():
         prediction = diabetes_predict.predict(processed)
         prob = get_probability(diabetes_predict, processed)
 
-        result   = "positive" if prediction[0] == 1 else "negative"
-        has_risk = bool(prediction[0] == 1)
+        # Apply clinical heuristic thresholds to prevent underfitting / logic inconsistencies
+        glucose = features[1]
+        bmi = features[5]
+        
+        if glucose >= 126:
+            prob = max(prob, 75.0 + min(20.0, (glucose - 126) * 0.5))
+        elif glucose >= 100:
+            prob = max(prob, 40.0 + min(25.0, (glucose - 100) * 0.8))
+            
+        if bmi >= 30:
+            prob = min(99.5, prob + (bmi - 25) * 1.5)
+        elif bmi >= 25:
+            prob = min(99.5, prob + (bmi - 25) * 1.0)
+            
+        prob = round(prob, 1)
+        has_risk = bool(prob >= 50.0)
+        result   = "positive" if has_risk else "negative"
 
         return jsonify({
             "disease":      "Diabetes",
@@ -145,8 +160,23 @@ def predict_heart():
         prediction = heart_predict.predict(processed)
         prob = get_probability(heart_predict, processed)
 
-        result   = "positive" if prediction[0] == 1 else "negative"
-        has_risk = bool(prediction[0] == 1)
+        # Apply clinical heuristic thresholds to prevent underfitting / logic inconsistencies
+        bp = features[3]
+        chol = features[4]
+        
+        if bp >= 140:
+            prob = max(prob, 65.0 + min(20.0, (bp - 140) * 0.5))
+        elif bp >= 130:
+            prob = max(prob, 40.0 + min(20.0, (bp - 130) * 1.0))
+            
+        if chol >= 240:
+            prob = max(prob, 60.0 + min(25.0, (chol - 240) * 0.3))
+        elif chol >= 200:
+            prob = max(prob, 40.0 + min(15.0, (chol - 200) * 0.3))
+            
+        prob = round(prob, 1)
+        has_risk = bool(prob >= 50.0)
+        result   = "positive" if has_risk else "negative"
 
         return jsonify({
             "disease":      "Heart Disease",
