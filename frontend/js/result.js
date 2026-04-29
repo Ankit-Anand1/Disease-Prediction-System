@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${rawVal ? `
             <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-top:1rem; color:#475569; font-weight:600;">
                 <span>${normalText}</span>
-                <span style="color:${isTopFactor ? colors.high : colors.low}">${rawVal}</span>
+                <span style="color:${factorColor}">${rawVal}</span>
             </div>
             ` : ''}
 

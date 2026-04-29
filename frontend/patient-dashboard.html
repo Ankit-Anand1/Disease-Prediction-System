@@ -24,6 +24,12 @@
         .health-score-card { background: linear-gradient(135deg, #4F46E5, #7C3AED); color: white; }
         .health-score-card .bento-label { color: rgba(255,255,255,0.8); }
         .health-score-card .bento-val { color: white; }
+        
+        .hidden { display: none !important; }
+        @keyframes dropdownPop {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
     </style>
 </head>
 <body class="app-body">
@@ -186,14 +192,14 @@
                 <div class="modern-table-wrapper">
                     <div style="padding: 1.5rem; border-bottom: 1px solid #E2E8F0; display:flex; justify-content:space-between; align-items:center;">
                         <h3 style="font-size: 1.15rem; color: #0F172A;"><i class="fa-solid fa-list-check" style="color: #64748B;"></i> Clinical History</h3>
-                        <select id="historyFilter" onchange="window.renderHistory()" style="padding:0.4rem 0.8rem; border-radius:8px; border:1px solid #E2E8F0; background:#F8FAFC; outline:none; font-size:0.85rem;">
+                        <select id="historyFilter" onchange="window.renderHistory()" style="padding:0.4rem 0.8rem; border-radius:8px; border:1px solid #E2E8F0; background:#F8FAFC; outline:none; font-size:0.85rem; color:#475569; font-weight:500;">
                             <option value="all">All Tests</option>
                             <option value="diabetes">Diabetes Only</option>
                             <option value="heart">Heart Only</option>
                         </select>
                     </div>
-                    <div style="overflow-x: auto;">
-                        <div id="historyBody" style="display:flex; flex-direction:column; gap:1rem; padding: 1.5rem; background: #F8FAFC;"></div>
+                    <div style="padding: 1.5rem; background: #F8FAFC;">
+                        <div id="historyBody" style="display:flex; flex-direction:column; gap:1.25rem;"></div>
                     </div>
                 </div>
             </div>
