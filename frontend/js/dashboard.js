@@ -238,24 +238,33 @@ window.renderHistory = function() {
         let status = riskVal >= 70 ? ['#EF4444', 'High Risk', '#FEF2F2'] : riskVal >= 30 ? ['#F59E0B', 'Moderate', '#FFFBEB'] : ['#10B981', 'Low Risk', '#ECFDF5'];
         
         return `
-            <div class="history-card" style="background: white; border: 1px solid #E2E8F0; border-left: 4px solid ${status[0]}; border-radius: 12px; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; cursor: default;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 15px -3px rgba(0,0,0,0.1)'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 6px -1px rgba(0,0,0,0.05)'">
-                <div style="display:flex; flex-direction:column; gap:0.4rem;">
-                    <div style="font-size: 1.1rem; font-weight: 700; color: #0F172A; display:flex; align-items:center; gap:0.5rem;">
-                        ${typeHtml}
-                        <span style="font-size:0.75rem; padding:0.2rem 0.6rem; background:${status[2]}; color:${status[0]}; border-radius:99px; margin-left:0.5rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em;">${status[1]}</span>
+            <div class="history-card" style="background: white; border: 1px solid #E2E8F0; border-radius: 16px; padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); cursor: default; position: relative; overflow: visible;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)'; this.querySelector('.card-glow').style.opacity='1'" onmouseout="this.style.transform='none'; this.style.boxShadow='0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03)'; this.querySelector('.card-glow').style.opacity='0'">
+                <!-- Glow Effect -->
+                <div class="card-glow" style="position: absolute; top: 0; left: 0; width: 6px; height: 100%; background: ${status[0]}; opacity: 0; transition: opacity 0.3s; border-radius: 16px 0 0 16px;"></div>
+                
+                <div style="display:flex; flex-direction:column; gap:0.5rem; padding-left: 0.5rem;">
+                    <div style="font-size: 1.15rem; font-weight: 800; color: #0F172A; display:flex; align-items:center; gap:0.75rem;">
+                        <div style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; border-radius: 10px; background: ${status[0]}15; color: ${status[0]};">
+                            ${item.type === 'diabetes' ? '<i class="fa-solid fa-vial"></i>' : '<i class="fa-solid fa-heart-pulse"></i>'}
+                        </div>
+                        ${item.type === 'diabetes' ? 'Diabetes Assessment' : 'Heart Assessment'}
+                        <span style="font-size:0.7rem; padding:0.25rem 0.75rem; background:${status[2]}; color:${status[0]}; border-radius:99px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; border: 1px solid ${status[0]}30;">${status[1]}</span>
                     </div>
-                    <div style="color: #64748B; font-size: 0.9rem; display:flex; align-items:center; gap: 0.5rem;">
-                        <i class="fa-regular fa-calendar" style="color:#94A3B8;"></i> ${date} 
-                        <span style="color:#CBD5E1;">|</span>
-                        <span style="font-weight:700; color:#334155;">Risk Score: ${riskVal.toFixed(1)}%</span>
+                    <div style="color: #64748B; font-size: 0.95rem; display:flex; align-items:center; gap: 0.75rem; font-weight: 500;">
+                        <span><i class="fa-regular fa-calendar" style="color:#94A3B8;"></i> ${date}</span>
+                        <span style="color:#E2E8F0;">|</span>
+                        <span style="display: flex; align-items: center; gap: 0.4rem;">
+                            <i class="fa-solid fa-chart-pie" style="color:#94A3B8;"></i> Risk Score: 
+                            <span style="font-weight:800; color:${status[0]};">${riskVal.toFixed(1)}%</span>
+                        </span>
                     </div>
                 </div>
                 <div class="dropdown" style="position:relative;">
-                    <button class="btn btn-ghost" onclick="toggleDropdown(event, ${rawIndex})" style="padding:0.5rem; background:none; border:none; cursor:pointer; color:#94A3B8; transition: color 0.2s;" onmouseover="this.style.color='#0F172A'" onmouseout="this.style.color='#94A3B8'"><i class="fa-solid fa-ellipsis-vertical" style="font-size:1.2rem;"></i></button>
-                    <div id="dropdown-${rawIndex}" class="dropdown-menu hidden" style="position:absolute; right:0; top:100%; background:white; border:1px solid #E2E8F0; border-radius:12px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); z-index:50; min-width:160px; display:none; overflow:hidden; transform-origin: top right; animation: dropdownPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
-                        <button onclick="viewReport(${rawIndex})" style="width:100%; padding:0.75rem 1rem; text-align:left; background:none; border:none; cursor:pointer; font-size:0.9rem; color:#334155; border-bottom:1px solid #F8FAFC; transition: background 0.2s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='none'"><i class="fa-solid fa-eye" style="width:20px; color:#64748B;"></i> View Report</button>
-                        <button onclick="downloadReport(${rawIndex})" style="width:100%; padding:0.75rem 1rem; text-align:left; background:none; border:none; cursor:pointer; font-size:0.9rem; color:#334155; border-bottom:1px solid #F8FAFC; transition: background 0.2s;" onmouseover="this.style.background='#F8FAFC'" onmouseout="this.style.background='none'"><i class="fa-solid fa-download" style="width:20px; color:#64748B;"></i> Download PDF</button>
-                        <button onclick="showDeleteModal(${rawIndex})" style="width:100%; padding:0.75rem 1rem; text-align:left; background:none; border:none; color:#EF4444; cursor:pointer; font-size:0.9rem; transition: background 0.2s;" onmouseover="this.style.background='#FEF2F2'" onmouseout="this.style.background='none'"><i class="fa-solid fa-trash" style="width:20px;"></i> Delete Record</button>
+                    <button class="btn btn-ghost" onclick="toggleDropdown(event, ${rawIndex})" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #F8FAFC; border: 1px solid #E2E8F0; cursor:pointer; color:#64748B; transition: all 0.2s;" onmouseover="this.style.background='#F1F5F9'; this.style.color='#0F172A'; this.style.transform='scale(1.05)';" onmouseout="this.style.background='#F8FAFC'; this.style.color='#64748B'; this.style.transform='scale(1)';"><i class="fa-solid fa-ellipsis-vertical" style="font-size:1.1rem;"></i></button>
+                    <div id="dropdown-${rawIndex}" class="dropdown-menu" style="position:absolute; right:0; top:calc(100% + 5px); background:white; border:1px solid #E2E8F0; border-radius:12px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); z-index:50; min-width:180px; display:none; overflow:hidden; transform-origin: top right; animation: dropdownPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
+                        <button onclick="viewReport(${rawIndex})" style="width:100%; padding:0.8rem 1.25rem; text-align:left; background:none; border:none; cursor:pointer; font-size:0.95rem; font-weight: 500; color:#334155; border-bottom:1px solid #F8FAFC; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem;" onmouseover="this.style.background='#F8FAFC'; this.style.paddingLeft='1.5rem';" onmouseout="this.style.background='none'; this.style.paddingLeft='1.25rem';"><i class="fa-solid fa-eye" style="color:#64748B;"></i> View Report</button>
+                        <button onclick="downloadReport(${rawIndex})" style="width:100%; padding:0.8rem 1.25rem; text-align:left; background:none; border:none; cursor:pointer; font-size:0.95rem; font-weight: 500; color:#334155; border-bottom:1px solid #F8FAFC; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem;" onmouseover="this.style.background='#F8FAFC'; this.style.paddingLeft='1.5rem';" onmouseout="this.style.background='none'; this.style.paddingLeft='1.25rem';"><i class="fa-solid fa-download" style="color:#64748B;"></i> Download PDF</button>
+                        <button onclick="showDeleteModal(${rawIndex})" style="width:100%; padding:0.8rem 1.25rem; text-align:left; background:none; border:none; color:#EF4444; cursor:pointer; font-size:0.95rem; font-weight: 600; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem;" onmouseover="this.style.background='#FEF2F2'; this.style.paddingLeft='1.5rem';" onmouseout="this.style.background='none'; this.style.paddingLeft='1.25rem';"><i class="fa-solid fa-trash"></i> Delete Record</button>
                     </div>
                 </div>
             </div>`;
