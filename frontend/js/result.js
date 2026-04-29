@@ -10,6 +10,26 @@ document.addEventListener('DOMContentLoaded', () => {
     let riskValue = parseFloat(data.risk_prob);
     if (isNaN(riskValue)) riskValue = 0;
     
+    // --- FRONTEND HEURISTIC OVERRIDE ---
+    // Enforce clinical reality if the ML model underfits
+    if (data.type === 'diabetes' && data.inputs) {
+        const glucose = data.inputs['Glucose'];
+        const bmi = data.inputs['BMI'];
+        if (glucose >= 126) riskValue = Math.max(riskValue, 75.0); // Diabetic range -> High
+        else if (glucose >= 100) riskValue = Math.max(riskValue, 40.0); // Pre-diabetic -> Medium
+        
+        if (bmi >= 30) riskValue = Math.max(riskValue, riskValue + 15.0); // Obese
+        else if (bmi >= 25) riskValue = Math.max(riskValue, riskValue + 5.0); // Overweight
+    } else if (data.type === 'heart' && data.inputs) {
+        const bp = data.inputs['Blood Pressure'];
+        const chol = data.inputs['Cholesterol'];
+        if (bp >= 140) riskValue = Math.max(riskValue, 70.0);
+        else if (bp >= 130) riskValue = Math.max(riskValue, 40.0);
+        
+        if (chol >= 240) riskValue = Math.max(riskValue, 70.0);
+        else if (chol >= 200) riskValue = Math.max(riskValue, 40.0);
+    }
+    
     // Cap edges for UI
     if (riskValue < 2.5) riskValue = 2.5 + (Math.random() * 5); 
     if (riskValue > 99.5) riskValue = 99.5;
@@ -18,14 +38,14 @@ document.addEventListener('DOMContentLoaded', () => {
     data.factors.sort((a, b) => b.value - a.value);
 
     const colors = { high: '#EF4444', moderate: '#F59E0B', low: '#10B981' };
-    const activeColor = riskValue > 66 ? colors.high : riskValue > 33 ? colors.moderate : colors.low;
-    const activeText = riskValue > 66 ? 'High Risk' : riskValue > 33 ? 'Moderate Risk' : 'Low Risk';
+    const activeColor = riskValue >= 70 ? colors.high : riskValue >= 30 ? colors.moderate : colors.low;
+    const activeText = riskValue >= 70 ? 'High Risk' : riskValue >= 30 ? 'Moderate Risk' : 'Low Risk';
     
     // Set dynamic body gradient
     const body = document.getElementById('resultBody');
     body.className = 'app-body'; // reset
-    if (riskValue > 66) body.classList.add('risk-high');
-    else if (riskValue > 33) body.classList.add('risk-medium');
+    if (riskValue >= 70) body.classList.add('risk-high');
+    else if (riskValue >= 30) body.classList.add('risk-medium');
     else body.classList.add('risk-low');
 
     // Headers
@@ -34,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     iconDiv.innerHTML = data.type === 'diabetes' ? '<i class="fa-solid fa-vial" style="color: #6366F1;"></i>' : '<i class="fa-solid fa-heart-pulse" style="color: #EC4899;"></i>';
 
     // Smart Alert Banner
-    if (riskValue > 66) {
+    if (riskValue >= 70) {
         document.getElementById('smartAlertContainer').innerHTML = `
             <div class="smart-alert">
                 <div class="smart-alert-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
@@ -69,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const diff = riskValue - lastRisk;
         const trendBadge = document.getElementById('trendBadge');
-        if (Math.abs(diff) > 2.0) {
+        if (Math.abs(diff) > 2.0 && lastRisk > 0) {
             if (diff > 0) {
                 trendBadge.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> Risk Increased from ${lastRisk.toFixed(1)}% to ${riskValue.toFixed(1)}%`;
                 trendBadge.style.color = colors.high;
@@ -77,6 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 trendBadge.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> Risk Decreased from ${lastRisk.toFixed(1)}% to ${riskValue.toFixed(1)}%`;
                 trendBadge.style.color = colors.low;
             }
+        } else {
+            trendBadge.style.display = 'none';
         }
     }
 
@@ -126,7 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const dietPlanList = document.getElementById('dietPlanList');
     let diets = [];
     if (data.type === 'diabetes') {
-        if (riskValue > 66) {
+        if (riskValue >= 70) {
             diets = [
                 { emoji: "🚫", title: "Avoid Sugar", desc: "No refined sugars or sweets" },
                 { emoji: "🥗", title: "More Fiber", desc: "Quinoa, oats, and leafy greens" },
@@ -140,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ];
         }
     } else {
-        if (riskValue > 66) {
+        if (riskValue >= 70) {
             diets = [
                 { emoji: "🧂", title: "Low Sodium", desc: "Crucial: Reduce salt intake" },
                 { emoji: "🍔", title: "No Trans Fats", desc: "Avoid fried & processed meats" },
@@ -168,12 +190,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Future Risk Prediction & Simulation
     const futureBadge = document.getElementById('futureRiskBadge');
-    if (riskValue > 66) {
+    if (riskValue >= 70) {
         futureBadge.innerHTML = '<span style="color:#EF4444;">High Risk</span>';
         futureBadge.parentElement.style.color = '#7F1D1D';
         document.querySelector('.future-risk-card').style.background = '#FEF2F2';
         document.querySelector('.future-risk-card').style.borderColor = '#FECACA';
-    } else if (riskValue > 33) {
+    } else if (riskValue >= 30) {
         futureBadge.innerHTML = '<span style="color:#F59E0B;">Moderate</span>';
     } else {
         futureBadge.innerHTML = '<span style="color:#10B981;">Low Risk</span>';
@@ -196,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Doctor Suggestion Logic
-    if (riskValue > 66) {
+    if (riskValue >= 70) {
         document.getElementById('doctorSuggestion').style.display = 'block';
         if (data.type === 'diabetes') {
             document.getElementById('doctorText').textContent = 'Consult an Endocrinologist immediately to discuss blood sugar management.';
@@ -221,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const factorsGrid = document.getElementById('factorsGrid');
     factorsGrid.innerHTML = data.factors.map((f, idx) => {
-        const isTopFactor = idx < 3 && riskValue > 33;
+        const isTopFactor = idx < 3 && riskValue >= 30;
         const factorColor = isTopFactor ? colors.high : colors.low;
         
         let rawVal = "";
