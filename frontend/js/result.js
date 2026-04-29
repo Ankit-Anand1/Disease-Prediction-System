@@ -70,11 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('currentUser')) || { name: 'Guest' };
     let summaryText = `Based on the deep-learning analysis, <strong>${user.name}</strong> exhibits a <strong>${activeText}</strong> profile for ${data.disease} with a Predicted Risk Score of ${riskValue.toFixed(1)}%.<br><br>`;
     
-    if (data.factors.length >= 3) {
-        summaryText += `The primary biomarkers driving this risk calculation are:<br>`;
-        summaryText += `&bull; <strong>${data.factors[0].label}</strong><br>`;
-        summaryText += `&bull; <strong>${data.factors[1].label}</strong><br>`;
-        summaryText += `&bull; <strong>${data.factors[2].label}</strong>`;
+    if (data.factors.length >= 2) {
+        summaryText += `Your ${activeText.toLowerCase()} is primarily driven by elevated ${data.factors[0].label.toLowerCase()} and ${data.factors[1].label.toLowerCase()}. Lifestyle adjustments can significantly reduce your risk.`;
     }
     document.getElementById('aiSummaryText').innerHTML = summaryText;
 
@@ -231,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Explainable AI Factors (Insights + Sliders)
     const factorInsights = {
-        "Glucose": { normal: "70-99 mg/dL", getInsight: v => v > 125 ? "High glucose is a major risk factor." : "Glucose is slightly elevated." },
+        "Glucose": { normal: "70-99 mg/dL", getInsight: v => v > 125 ? "High glucose is a major risk factor." : "Glucose is above normal range." },
         "BMI": { normal: "18.5-24.9", getInsight: v => v >= 30 ? "Obesity significantly increases risk." : "Your BMI is above normal." },
         "Age": { normal: "< 50", getInsight: v => "Age naturally increases risk factors." },
         "Cholesterol": { normal: "< 200 mg/dL", getInsight: v => v > 240 ? "Cholesterol is severely high." : "Cholesterol is slightly elevated." },
@@ -243,8 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const factorsGrid = document.getElementById('factorsGrid');
     factorsGrid.innerHTML = data.factors.map((f, idx) => {
-        const isTopFactor = idx < 3 && riskValue >= 30;
-        const factorColor = isTopFactor ? colors.high : colors.low;
+        const factorColor = f.value >= 70 ? colors.high : (f.value >= 40 ? colors.moderate : colors.low);
         
         let rawVal = "";
         let normalText = "";
@@ -407,6 +403,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     window.predictionData = { riskValue, disease: data.disease, factors: data.factors, precautions: data.precautions, diets };
+    
+    // Auto download if requested
+    if (localStorage.getItem('autoDownloadPdf') === 'true') {
+        localStorage.removeItem('autoDownloadPdf');
+        setTimeout(() => {
+            document.getElementById('downloadPdfBtn').click();
+        }, 1000); // Give fonts a moment to load
+    }
 });
 
 // Chat logic
