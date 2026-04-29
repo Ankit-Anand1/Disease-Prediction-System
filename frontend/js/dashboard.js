@@ -41,6 +41,9 @@ document.addEventListener('click', (e) => {
         document.querySelectorAll('.dropdown-menu').forEach(menu => {
             menu.style.display = 'none';
         });
+        document.querySelectorAll('.history-card').forEach(card => {
+            card.style.zIndex = '1';
+        });
     }
 });
 
@@ -260,7 +263,7 @@ window.renderHistory = function() {
                     </div>
                 </div>
                 <div class="dropdown" style="position:relative;">
-                    <button class="btn btn-ghost" onclick="toggleDropdown(event, ${rawIndex})" style="width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: #F8FAFC; border: 1px solid #E2E8F0; cursor:pointer; color:#64748B; transition: all 0.2s;" onmouseover="this.style.background='#F1F5F9'; this.style.color='#0F172A'; this.style.transform='scale(1.05)';" onmouseout="this.style.background='#F8FAFC'; this.style.color='#64748B'; this.style.transform='scale(1)';"><i class="fa-solid fa-ellipsis-vertical" style="font-size:1.1rem;"></i></button>
+                    <button class="btn btn-ghost" onclick="toggleDropdown(event, ${rawIndex})" style="width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: transparent; border: none; cursor:pointer; color:#94A3B8; transition: all 0.2s;" onmouseover="this.style.background='#F1F5F9'; this.style.color='#334155';" onmouseout="this.style.background='transparent'; this.style.color='#94A3B8';"><i class="fa-solid fa-ellipsis-vertical" style="font-size:1.1rem;"></i></button>
                     <div id="dropdown-${rawIndex}" class="dropdown-menu" style="position:absolute; right:0; top:calc(100% + 5px); background:white; border:1px solid #E2E8F0; border-radius:12px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04); z-index:50; min-width:180px; display:none; overflow:hidden; transform-origin: top right; animation: dropdownPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);">
                         <button onclick="viewReport(${rawIndex})" style="width:100%; padding:0.8rem 1.25rem; text-align:left; background:none; border:none; cursor:pointer; font-size:0.95rem; font-weight: 500; color:#334155; border-bottom:1px solid #F8FAFC; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem;" onmouseover="this.style.background='#F8FAFC'; this.style.paddingLeft='1.5rem';" onmouseout="this.style.background='none'; this.style.paddingLeft='1.25rem';"><i class="fa-solid fa-eye" style="color:#64748B;"></i> View Report</button>
                         <button onclick="downloadReport(${rawIndex})" style="width:100%; padding:0.8rem 1.25rem; text-align:left; background:none; border:none; cursor:pointer; font-size:0.95rem; font-weight: 500; color:#334155; border-bottom:1px solid #F8FAFC; transition: all 0.2s; display: flex; align-items: center; gap: 0.75rem;" onmouseover="this.style.background='#F8FAFC'; this.style.paddingLeft='1.5rem';" onmouseout="this.style.background='none'; this.style.paddingLeft='1.25rem';"><i class="fa-solid fa-download" style="color:#64748B;"></i> Download PDF</button>
@@ -277,10 +280,17 @@ window.toggleDropdown = function(event, index) {
     const targetMenu = document.getElementById(`dropdown-${index}`);
     const isVisible = targetMenu.style.display === 'block';
     
+    // Reset all card z-indexes
+    document.querySelectorAll('.history-card').forEach(card => {
+        card.style.zIndex = '1';
+    });
+    
     allMenus.forEach(menu => menu.style.display = 'none'); // Close others
     
     if (!isVisible) {
         targetMenu.style.display = 'block';
+        // Boost z-index of the parent card so dropdown overlaps subsequent cards
+        targetMenu.closest('.history-card').style.zIndex = '50';
     }
 };
 
