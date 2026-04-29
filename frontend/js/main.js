@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('predictForm');
     const resultsPanel = document.getElementById('resultsPanel');
-    const API_URL = 'http://localhost:5001/api/predict/';
+    const API_URL = 'https://disease-prediction-system-v956.onrender.com/api/predict/';
 
     if (form) {
         form.addEventListener('submit', async (e) => {
