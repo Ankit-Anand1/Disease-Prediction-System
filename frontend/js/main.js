@@ -53,8 +53,33 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Fix absolute risk calculation
                 let finalRisk = parseFloat(result.risk_prob);
-                // Do NOT invert it. The backend always returns prob of class 1 (disease risk).
+                
+                // --- GLOBAL HEURISTIC OVERRIDE ---
+                // Enforce clinical reality if the ML model underfits
+                if (type === 'diabetes' && result.inputs) {
+                    const glucose = parseFloat(result.inputs['Glucose'] || 0);
+                    const bmi = parseFloat(result.inputs['BMI'] || 0);
+                    if (glucose >= 126) finalRisk = Math.max(finalRisk, 75.0); // Diabetic range -> High
+                    else if (glucose >= 100) finalRisk = Math.max(finalRisk, 40.0); // Pre-diabetic -> Medium
+                    
+                    if (bmi >= 30) finalRisk = Math.max(finalRisk, finalRisk + 15.0); // Obese
+                    else if (bmi >= 25) finalRisk = Math.max(finalRisk, finalRisk + 5.0); // Overweight
+                } else if (type === 'heart' && result.inputs) {
+                    const bp = parseFloat(result.inputs['Blood Pressure'] || 0);
+                    const chol = parseFloat(result.inputs['Cholesterol'] || 0);
+                    if (bp >= 140) finalRisk = Math.max(finalRisk, 70.0);
+                    else if (bp >= 130) finalRisk = Math.max(finalRisk, 40.0);
+                    
+                    if (chol >= 240) finalRisk = Math.max(finalRisk, 70.0);
+                    else if (chol >= 200) finalRisk = Math.max(finalRisk, 40.0);
+                }
+                
+                finalRisk = Math.min(99.9, Math.max(0, finalRisk));
                 result.risk_prob = finalRisk;
+                
+                if (finalRisk >= 70) result.risk_level = "High";
+                else if (finalRisk >= 40) result.risk_level = "Moderate";
+                else result.risk_level = "Low";
                 
                 // Save to localStorage and redirect to result page
                 result.timestamp = new Date().toISOString();

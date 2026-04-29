@@ -10,26 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let riskValue = parseFloat(data.risk_prob);
     if (isNaN(riskValue)) riskValue = 0;
     
-    // --- FRONTEND HEURISTIC OVERRIDE ---
-    // Enforce clinical reality if the ML model underfits
-    if (data.type === 'diabetes' && data.inputs) {
-        const glucose = data.inputs['Glucose'];
-        const bmi = data.inputs['BMI'];
-        if (glucose >= 126) riskValue = Math.max(riskValue, 75.0); // Diabetic range -> High
-        else if (glucose >= 100) riskValue = Math.max(riskValue, 40.0); // Pre-diabetic -> Medium
-        
-        if (bmi >= 30) riskValue = Math.max(riskValue, riskValue + 15.0); // Obese
-        else if (bmi >= 25) riskValue = Math.max(riskValue, riskValue + 5.0); // Overweight
-    } else if (data.type === 'heart' && data.inputs) {
-        const bp = data.inputs['Blood Pressure'];
-        const chol = data.inputs['Cholesterol'];
-        if (bp >= 140) riskValue = Math.max(riskValue, 70.0);
-        else if (bp >= 130) riskValue = Math.max(riskValue, 40.0);
-        
-        if (chol >= 240) riskValue = Math.max(riskValue, 70.0);
-        else if (chol >= 200) riskValue = Math.max(riskValue, 40.0);
-    }
-    
     // Cap edges for UI
     if (riskValue < 2.5) riskValue = 2.5 + (Math.random() * 5); 
     if (riskValue > 99.5) riskValue = 99.5;
